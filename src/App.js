@@ -1,19 +1,26 @@
 import React, {useEffect} from 'react';
-import {Widget, addResponseMessage} from "react-chat-widget";
+import {Widget, addResponseMessage, addUserMessage} from "react-chat-widget";
 import "react-chat-widget/lib/styles.css";
 import logo from './logo.svg';
 import './App.css'
 
 
-function App() {
-    let message = localStorage.getItem('message');
-
+const App = () => {
+    let chatHistory = {
+        messages: [],
+    };
     useEffect(() => {
-        addResponseMessage("Привет, Артём!");
-        addResponseMessage(message);
+        addResponseMessage("Добро пожаловать");
+        let MessagesString = localStorage.getItem('message');
+        let MessagesObject = JSON.parse(MessagesString);
+        MessagesObject.messages.map((element) => {
+            return element.isBot ? addResponseMessage(element.message) : addUserMessage(element.message);
+        })
     }, []);
 
     const handleNewUserMessage = (newMessage) => {
+        chatHistory.messages.push({message: newMessage, isBot: 0});
+        localStorage.setItem('message', JSON.stringify(chatHistory));
         console.log(`New message incoming! ${newMessage}`);
         fetch("https://172.16.6.253:1000/api/text/messages/full", {
             method: "POST",
@@ -29,17 +36,17 @@ function App() {
             .then(async response => {
                 const respJson = await response.json();
                 addResponseMessage(respJson.response.text);
-                localStorage.setItem('message', newMessage);
+                chatHistory.messages.push({message: respJson.response.text, isBot: 1});
             });
     };
 
     return (
         <div className="App">
             <Widget handleNewUserMessage={handleNewUserMessage}
-                    title="Русский язык"
-                    subtitle="Везде"
+                    title="Банковский чат-бот"
+                    subtitle="Здесь вы можете узнать любую информацию"
                     profileAvatar={logo}
-                    senderPlaceHolder='Введите в меня текст'
+                    senderPlaceHolder='Введите текст'
                     showTimeStamp
                     autofocus
                     launcherOpenLabel
@@ -48,6 +55,6 @@ function App() {
             />
         </div>
     );
-}
+};
 
 export default App;

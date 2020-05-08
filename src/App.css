@@ -1,7 +1,11 @@
 .rcw-conversation-container > .rcw-header {
-  background-color: darkblue;
+    background-color: deepskyblue;
 }
 
 .rcw-message > .rcw-response {
-  color: black;
+    color: black;
+}
+
+.rcw-launcher {
+    background-color: deepskyblue;
 }
