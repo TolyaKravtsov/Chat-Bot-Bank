@@ -26,6 +26,9 @@ const SocketConnection = () => {
         chatHistory.messages.push({message: newMessage, isBot: 0});
         localStorage.setItem('message', JSON.stringify(chatHistory));
         console.log(`New message incoming! ${newMessage}`);
+        socket.onmessage = event => {
+            addResponseMessage(event.data);
+        };
     };
 
     const generateChatID = () => {
@@ -39,7 +42,7 @@ const SocketConnection = () => {
             handleToggle();
             let chatID = localStorage.getItem('chatID');
             chatID ? socket.send(chatID) : generateChatID()
-        }}>This is my launcher component!
+        }}>Custom launcher
         </button>
 
     return (
