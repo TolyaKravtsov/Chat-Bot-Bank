@@ -3,6 +3,7 @@ import {addResponseMessage, addUserMessage} from "react-chat-widget";
 import "react-chat-widget/lib/styles.css";
 import './App.css'
 import WidgetUI from "./widjetUI";
+import {generateChatID} from "./common/generateChatID";
 
 let socket = new WebSocket("wss://javascript.info/article/websocket/demo/hello");
 
@@ -31,17 +32,11 @@ const SocketConnection = () => {
         };
     };
 
-    const generateChatID = () => {
-        const id = `f${(~~(Math.random() * 1e8)).toString(16)}`;
-        localStorage.setItem('chatID', id);
-        socket.send(id);
-    }
-
     const getCustomLauncher = (handleToggle) =>
         <button onClick={() => {
             handleToggle();
             let chatID = localStorage.getItem('chatID');
-            chatID ? socket.send(chatID) : generateChatID()
+            chatID ? socket.send(chatID) : generateChatID().then(socket.send(chatID));
         }}>Custom launcher
         </button>
 
