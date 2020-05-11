@@ -1,4 +1,0 @@
-export const generateChatID = () => {
-    const id = `f${(~~(Math.random() * 1e8)).toString(16)}`;
-    localStorage.setItem('chatID', id);
-}
