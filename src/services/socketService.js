@@ -2,13 +2,16 @@ class SocketService {
   constructor(chatId) {
     this.chatId = chatId;
     this.socket = new WebSocket(
-      "wss://javascript.info/article/websocket/demo/hello"
+      "ws://172.16.6.253:19001?token=383ce66f9cae40bfb7b759b63a636e15"
     );
   }
 
   sendMessage(message) {
     //TODO attach chatId to message payload if needed. Discuss with Anton
-    this.socket.send(message);
+    this.socket.send({
+        "chatId": this.chatId,
+        "message": message,
+    });
   }
 
   listenToMessage(callback) {
