@@ -1,11 +1,28 @@
-import React, { useEffect } from "react";
-import { Widget, addResponseMessage, addUserMessage } from "react-chat-widget";
+import React, {useEffect} from "react";
+import {addResponseMessage, addUserMessage, renderCustomComponent, Widget} from "react-chat-widget";
 import "react-chat-widget/lib/styles.css";
 import logo from "./logo.svg";
 
 import SocketService from "./services/socketService";
 import initChatId from "./services/chatId";
 import HistoryService from "./services/historyService";
+import * as PropTypes from "prop-types";
+
+class Image extends React.PureComponent {
+    render() {
+        let {message} = this.props;
+        return (
+            <div>
+                <div>{addUserMessage(message)}</div>
+                <div>Дополнительная строка</div>
+            </div>
+
+
+        )
+    }
+}
+
+Image.propTypes = {message: PropTypes.any}
 
 const socketService = new SocketService(initChatId());
 const historyService = new HistoryService();
@@ -21,14 +38,14 @@ function handleNewUserMessage(message) {
 }
 
 const App = () => {
-  useEffect(() => {
-    const { messages } = historyService.restoreHistory();
-    messages.forEach((message) => {
-      return message.isBot
-        ? addResponseMessage(message.message)
-        : addUserMessage(message.message);
-    });
-  }, []);
+    useEffect(() => {
+        const {messages} = historyService.restoreHistory();
+        messages.forEach((message) => {
+            return message.isBot
+                ? addResponseMessage(message.message)
+                :  renderCustomComponent(Image, {message: message.message})
+        });
+    }, []);
 
   return (
     <Widget
